@@ -1,10 +1,13 @@
+from admin_totals.admin import ModelAdminTotals
 from django.contrib import admin
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 
 from .models import Kelas, Peserta
 # Register your models here.
 
 
-class PesertaAdmin(admin.ModelAdmin):
+class PesertaAdmin(ModelAdminTotals):
     exclude = ['created_at', 'updated_at']
     list_display = [
         'nama',
@@ -13,6 +16,7 @@ class PesertaAdmin(admin.ModelAdmin):
         'created_at',
         'updated_at'
     ]
+    list_totals = [('nominal', lambda field: Coalesce(Sum(field), 0))]
     list_filter = ['created_at']
     search_fields = ['nama']
 
